@@ -7,17 +7,20 @@ using UnityEngine.UI;
 
 public class miniBoss : MonoBehaviour
 {
-    public Transform target;
-    public Transform StartPos;//set target from inspector 
-    public Transform player;
-    public float speed = 3f;
-    public float range;
-    public int enemyHealth = 10;
+    [SerializeField]float speed;
+    //public float range;
+    [SerializeField]int enemyHealth;
     public PlayerMovement Dash; 
-    public float minDistance = 2f;
+    //public float minDistance = 2f;
     public Slider slider;
 
+    public GameObject _enemy;
+    public Transform[] points;
+    public Transform currentPosition;
+    public int pointSelect;
     public SpriteRenderer sR;
+
+    public GameObject boss_health;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,21 +30,29 @@ public class miniBoss : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        range = Vector2.Distance(transform.position, target.position);
-        BossmMovement();
+        _enemy.transform.position = Vector3.MoveTowards(_enemy.transform.position, currentPosition.position,
+            speed * Time.deltaTime);
+
+        if (_enemy.transform.position == currentPosition.position)
+        {
+            pointSelect++;
+            sR.flipX = true;
+            transform.Rotate(new Vector3(0, 180, 0));
+            if (pointSelect == points.Length)
+            {
+                pointSelect = 0;
+                sR.flipX = false;
+                transform.Rotate(new Vector3(0, 0, 0));
+            }
+            currentPosition = points[pointSelect];
+        }
         if (enemyHealth <= 0)
         {
             Destroy(gameObject);
+            boss_health.SetActive(false);
         }
     }
 
-    private void BossmMovement()
-    {
-        if (range > minDistance)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, new Vector2(target.position.x, transform.position.y), speed * Time.deltaTime);
-        }
-    }
     
     private void OnCollisionEnter2D(Collision2D other)
     {
@@ -68,18 +79,9 @@ public class miniBoss : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             transform.Rotate(new Vector3(0, 180, 0));
-            target = StartPos;
-            sR.color = Color.white;
-            speed = 3f;
-        }
-        if (other.gameObject.tag == "BossStartPos")
-        {
-            transform.Rotate(new Vector3(0, 180, 0));
             sR.color = Color.red;
-            target = player;
-            speed = 6f;
+           // speed = 3f;
         }
-        
     }
 }
 

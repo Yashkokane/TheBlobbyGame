@@ -99,5 +99,6 @@ public class HealthManager : MonoBehaviour
     public void shootHealthLoss()
     {
         PlayerHP = PlayerHP - 1;
+        healthbar.SetHealth(PlayerHP);
     }
 }
