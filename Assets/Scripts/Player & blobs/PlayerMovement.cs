@@ -179,91 +179,72 @@ public class PlayerMovement : MonoBehaviour
             if (knockbackCount <= 0)
             {
               moveDir = context.ReadValue<float>();
-            if (p_level1)
-            {
-                if (moveDir >0)
+                if (p_level1)
                 {
-                    transform.localRotation = Quaternion.Euler(0, 0, 0);
-                    //mySR.flipX = false;
-                    //sB.FlipFirePoint(false);
-                    anim_Small.SetBool("IsMoving",true);
-                }
-                else if (moveDir < 0)
-                { 
-                    transform.localRotation = Quaternion.Euler(0, 180, 0);
-                    //mySR.flipX = true;
-                    //sB.FlipFirePoint(true);
-                    anim_Small.SetBool("IsMoving",true);
-                }
-                else
-                {
-                    anim_Small.SetBool("IsMoving",false);
-                }
-            }
-            else if(p_level2)
-            {
-                if (moveDir >0)
-                {
-                    transform.localRotation = Quaternion.Euler(0, 0, 0);
-                    /*for (int i = 0; i < HeroB.Length; i++)
+                    if (moveDir >0)
                     {
-                        HeroB[i].flipX = false;
-                    }*/
-                    //mySR.flipX = false;
-                    anim_big.SetBool("IsMoving",true);
-                }
-                else if (moveDir < 0)
-                {
-                    transform.localRotation = Quaternion.Euler(0, 180, 0);
-                    /*for (int i = 0; i < HeroB.Length; i++)
+                        transform.localRotation = Quaternion.Euler(0, 0, 0);
+                        anim_Small.SetBool("IsMoving",true);
+                    }
+                    else if (moveDir < 0)
+                    { 
+                        transform.localRotation = Quaternion.Euler(0, 180, 0);
+                        anim_Small.SetBool("IsMoving",true);
+                    }
+                    else
                     {
-                        HeroB[i].flipX = true;
-                        Debug.Log(i);
-                    }*/
-                    anim_big.SetBool("IsMoving",true);
+                        anim_Small.SetBool("IsMoving",false);
+                    }
                 }
-                else
+                else if(p_level2)
                 {
-                    anim_big.SetBool("IsMoving",false);
+                    if (moveDir >0)
+                    {
+                        transform.localRotation = Quaternion.Euler(0, 0, 0);
+                        anim_big.SetBool("IsMoving",true);
+                    }
+                    else if (moveDir < 0)
+                    {
+                        transform.localRotation = Quaternion.Euler(0, 180, 0);
+                        anim_big.SetBool("IsMoving",true);
+                    }
+                    else
+                    {
+                        anim_big.SetBool("IsMoving",false);
+                    }
                 }
-            }
-            else if (p_E1)
-            {
-                if (moveDir >0)
+                else if (p_E1)
                 {
-                    mySRE.flipX = false;
-                    anim_enemy1.SetBool("IsMoving",true);
-                    //anim_Small.Play("Hero1_run");
+                    if (moveDir >0)
+                    {
+                        mySRE.flipX = false;
+                        anim_enemy1.SetBool("IsMoving",true);
+                    }
+                    else if (moveDir < 0)
+                    {
+                        mySRE.flipX = true;
+                        anim_enemy1.SetBool("IsMoving",true);
+                    }
+                    else
+                    {
+                        anim_enemy1.SetBool("IsMoving",false);
+                    }
                 }
-                else if (moveDir < 0)
+                else if (p_E2)
                 {
-                    mySRE.flipX = true;
-                    anim_enemy1.SetBool("IsMoving",true);
-                    //anim_Small.Play("Hero1_run");
-                }
-                else
-                {
-                    anim_enemy1.SetBool("IsMoving",false);
-                    //anim_Small.Play("Hero1_idle");
-                }
-            }
-            else if (p_E2)
-            {
-                if (moveDir >0)
-                {
-                    mySR.flipX = false;
-                    //anim_Small.Play("Hero1_run");
-                }
-                else if (moveDir < 0)
-                {
-                    mySR.flipX = true;
-                    //anim_Small.Play("Hero1_run");
-                }
-                else
-                {
-                    //anim_Small.Play("Hero1_idle");
-                }
-            }  
+                    if (moveDir >0)
+                    {
+                        mySR.flipX = false;
+                    }
+                    else if (moveDir < 0)
+                    {
+                        mySR.flipX = true;
+                    }
+                    else
+                    {
+                        
+                    }
+                }  
             }
         }
        
