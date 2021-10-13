@@ -6,28 +6,20 @@ using UnityEngine.UI;
 
 public class EnemyTrigger : MonoBehaviour
 {
-    /*public GameObject dSystem;*/
-        //public TMP_Text name;
-        //public TMP_Text combatText;
-   
-        public GameObject Dialogue;
+    public GameObject Dialogue;
         // Start is called before the first frame update
-        private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            Dialogue.SetActive(true);
+        }
+    }
+    private void OnTriggerExit2D(Collider2D other)
         {
             if (other.gameObject.tag == "Player")
             {
-                Dialogue.SetActive(true);
-                //ame.enabled = true;
-                //combatText.enabled = true;
+                Dialogue.SetActive(false);
             }
         }
-        private void OnTriggerExit2D(Collider2D other)
-            {
-                if (other.gameObject.tag == "Player")
-                {
-                    //name.enabled = false;
-                    //combatText.enabled = false;
-                    Dialogue.SetActive(false);
-                }
-            }
 }

@@ -21,7 +21,7 @@ public class TransformWheelController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (HealthManager.PlayerHP >= 55)
+        if (HealthManager.PlayerHP >= 50)
         {
             buttonBig.interactable = true;
             textB.SetActive(false);

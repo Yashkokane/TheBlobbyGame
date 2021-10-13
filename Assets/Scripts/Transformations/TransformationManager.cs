@@ -13,7 +13,7 @@ public class TransformationManager : MonoBehaviour
     public GameObject HBig;
     public GameObject H_E1;
     public GameObject H_E2;
-    
+    public bool canTransform;
     public static int TransformID = 0;
     public bool show;
     // Start is called before the first frame update
@@ -26,9 +26,32 @@ public class TransformationManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (HealthManager.PlayerHP < 50)
+        {
+            canTransform = false;
+            transformCheck();
+        }
+        else
+        {
+            canTransform = true;
+        }
     }
-    
+
+    public void transformCheck()
+    {
+        if (!canTransform)
+        {
+            HSmall.SetActive(true);
+            HBig.SetActive(false);
+            H_E1.SetActive(false);
+            H_E2.SetActive(false);
+            pM.moveForce = 25;
+            PlayerMovement.p_level1 = true;
+            PlayerMovement.p_level2 = false;
+            PlayerMovement.p_E1 = false;
+            PlayerMovement.p_E2 = false;
+        }
+    }
     public void TranformWheel()
     {
         show = !show;
@@ -66,17 +89,21 @@ public class TransformationManager : MonoBehaviour
                 //pM.sizeupdate();
                 break;
             case 2:
+                if (canTransform)
+                {
+                    HBig.SetActive(true);
+                    HSmall.SetActive(false);
+                    H_E1.SetActive(false);
+                    H_E2.SetActive(false);
+                    pM.Jump();
+                    pM.moveForce = 35;
+                    PlayerMovement.p_level1 = false;
+                    PlayerMovement.p_level2 = true;
+                    PlayerMovement.p_E1 = false;
+                    PlayerMovement.p_E2 = false;
+                }
                 //Debug.Log("big");
-                HBig.SetActive(true);
-                HSmall.SetActive(false);
-                H_E1.SetActive(false);
-                H_E2.SetActive(false);
-                pM.Jump();
-                pM.moveForce = 35;
-                PlayerMovement.p_level1 = false;
-                PlayerMovement.p_level2 = true;
-                PlayerMovement.p_E1 = false;
-                PlayerMovement.p_E2 = false;
+                
                 //pM.sizeupdate();
                 
                 break;
