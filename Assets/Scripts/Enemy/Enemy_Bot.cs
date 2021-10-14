@@ -8,6 +8,8 @@ public class Enemy_Bot : MonoBehaviour
     public GameObject player;
     public GameObject _enemyBot;
 
+    private dropItems DItems;
+
     public float moveSpeed;
     public int pointSelect;
     
@@ -23,6 +25,7 @@ public class Enemy_Bot : MonoBehaviour
         pM = GetComponent<PlayerMovement>();
         mySR = GetComponentInChildren<SpriteRenderer>();
         currentPosition = points[pointSelect];
+        DItems = FindObjectOfType<dropItems>();
     }
 
     // Update is called once per frame
@@ -60,6 +63,7 @@ public class Enemy_Bot : MonoBehaviour
     {
         if (collision.gameObject.tag == "Bullet")
         {
+            DItems.dropItemOnDeath();
             Destroy(gameObject);
         }
         /*if (collision.gameObject.tag == "Player" &&  pM.Dashing == true);

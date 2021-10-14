@@ -20,20 +20,13 @@ public class Potions : MonoBehaviour
         {
             case "PotionRed":
                 potionCollection.UpdateRedCount();
-                //Destroy(gameObject);
+                Destroy(gameObject);
                 break;
             case "PotionBlue":
                 potionCollection.UpdateBlueCount();
-                
-                //Destroy(gameObject);
+                Destroy(gameObject);
                 break;
         }
-
-        /*else if(gameObject.tag == "PotionRed")
-            { 
-                Pc.UpdateGreenCount();
-                //Destroy(gameObject);
-            }*/
     }
     /*private void OnTriggerEnter2D(Collider2D other)
     {
