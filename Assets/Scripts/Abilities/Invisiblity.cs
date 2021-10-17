@@ -22,8 +22,8 @@ public class Invisiblity : MonoBehaviour
     public bool isInvis;
     private Color colS;
     //[SerializeField] GameObject text;
-    [SerializeField] SpriteRenderer[] HeroB;
-    [SerializeField] Color[] colorB;
+    //[SerializeField] SpriteRenderer[] HeroB;
+    //[SerializeField] Color[] colorB;
     
     private potionCollection pC;
     
@@ -31,10 +31,10 @@ public class Invisiblity : MonoBehaviour
     {
         heroS = GetComponentInChildren<SpriteRenderer>();
         colS = heroS.color;
-        for (int i = 0; i < HeroB.Length; i++)
+        /*for (int i = 0; i < HeroB.Length; i++)
         {
             colorB[i] = HeroB[i].color;
-        }
+        }*/
         pC = FindObjectOfType<potionCollection>();
         pM = FindObjectOfType<PlayerMovement>();
     }
@@ -64,7 +64,7 @@ public class Invisiblity : MonoBehaviour
             else if (PlayerMovement.p_level2)
             {
                 gameObject.tag = "invisHero";
-                for (int i = 0; i < HeroB.Length; i++)
+                /*for (int i = 0; i < HeroB.Length; i++)
                 {
                     colorB[i].a = 0.5f;
                     HeroB[i].color = colorB[i];
@@ -72,7 +72,7 @@ public class Invisiblity : MonoBehaviour
                 colorB[1].a = 0.3f;
                 HeroB[1].color = colorB[1];
                 colorB[5].a = 0.3f;
-                HeroB[5].color = colorB[5];
+                HeroB[5].color = colorB[5];*/
                 SetTimer();
                 StartCoroutine(MyMethod());
             }
@@ -95,11 +95,11 @@ public class Invisiblity : MonoBehaviour
             }
             else if (PlayerMovement.p_level2)
             {
-                for (int i = 0; i < HeroB.Length; i++)
+                /*for (int i = 0; i < HeroB.Length; i++)
                 {
                     colorB[i].a = 1f;
                     HeroB[i].color = colorB[i];
-                }
+                }*/
                 isInvis = false;
                 gameObject.tag = "Player";
             }

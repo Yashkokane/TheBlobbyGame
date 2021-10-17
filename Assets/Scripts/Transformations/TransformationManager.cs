@@ -43,13 +43,9 @@ public class TransformationManager : MonoBehaviour
         {
             HSmall.SetActive(true);
             HBig.SetActive(false);
-            H_E1.SetActive(false);
-            H_E2.SetActive(false);
             pM.moveForce = 25;
             PlayerMovement.p_level1 = true;
             PlayerMovement.p_level2 = false;
-            PlayerMovement.p_E1 = false;
-            PlayerMovement.p_E2 = false;
         }
     }
     public void TranformWheel()
@@ -103,12 +99,11 @@ public class TransformationManager : MonoBehaviour
                     PlayerMovement.p_E2 = false;
                 }
                 //Debug.Log("big");
-                
                 //pM.sizeupdate();
                 
                 break;
             case 3:
-                //Debug.Log("E1");
+                
                 //PotionUsage(25);
                 HSmall.SetActive(false);
                 HBig.SetActive(false);
@@ -116,6 +111,7 @@ public class TransformationManager : MonoBehaviour
                 H_E2.SetActive(false);
                 pM.Jump();
                 pM.moveForce = 30;
+                //Debug.Log("E1");
                 gameObject.tag = "Player";
                 PlayerMovement.p_level1 = false;
                 PlayerMovement.p_level2 = false;

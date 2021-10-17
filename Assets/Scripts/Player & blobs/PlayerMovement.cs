@@ -32,8 +32,8 @@ public class PlayerMovement : MonoBehaviour
     private SpriteRenderer mySR;
     [SerializeField]private SpriteRenderer mySRE;
     
-    public float V_speed;
-    public bool canJump;
+    //public float V_speed;
+    private bool canJump;
     public Animator anim_Small;
     [SerializeField] private Animator anim_big;
     [SerializeField] private Animator anim_enemy1;
@@ -72,9 +72,9 @@ public class PlayerMovement : MonoBehaviour
     public  BoxCollider2D myBox;
     //public static BoxCollider2D myBoxB;
     
-    [SerializeField] SpriteRenderer[] HeroB;
+    //[SerializeField] SpriteRenderer[] HeroB;
 
-    [SerializeField] GameObject player;
+    //[SerializeField] GameObject player;
 
     public GameObject[] players;
     // Start is called before the first frame update\
