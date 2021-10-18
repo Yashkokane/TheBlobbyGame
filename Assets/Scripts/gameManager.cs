@@ -16,6 +16,7 @@ public class gameManager : MonoBehaviour
     private gameManager Gm;
     private HealthManager _healthManager;
     private static gameManager Instance;
+    public GameObject introDialogue;
 
     void Awake ()   
     {
@@ -32,6 +33,11 @@ public class gameManager : MonoBehaviour
     
     private void Start()
     {
+        if (!closeDialogue.instance.close)
+        {
+            introDialogue.SetActive(true);
+        }
+        
         _healthManager = FindObjectOfType<HealthManager>();
         //Gm = FindObjectOfType<gameManager>();
         DontDestroyOnLoad(gameObject);
