@@ -18,6 +18,8 @@ public class ShootingBullet : MonoBehaviour
     public bool canShoot;
     public bool isShooting;
 
+    public GameObject shootpointS;
+    public GameObject shootpointB;
     private HealthManager hM;
     private PlayerMovement pM;
     
@@ -41,7 +43,11 @@ public class ShootingBullet : MonoBehaviour
     {
         if (PlayerMovement.p_level2)
         {
-            transform.position = new Vector3(transform.position.x, 1f, transform.position.z);
+            transform.position = shootpointB.transform.position;
+        }
+        else
+        {
+            transform.position = shootpointS.transform.position;
         }
         canShoot = true;
         if (canShoot && !isShooting )

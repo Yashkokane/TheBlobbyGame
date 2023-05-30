@@ -8,7 +8,8 @@ public class MovingEnemy : MonoBehaviour
 {
     public GameObject _enemy;
     public GameObject _SJAbility;
-    
+    public  GameObject items1;
+    public  GameObject items2;
     //enemy stats
     private float moveSpeed = 3;
     public  int health = 4;
@@ -18,25 +19,22 @@ public class MovingEnemy : MonoBehaviour
     public Transform currentPosition;
     public Transform[] points;
     public int pointSelect;
-    
+    public GameObject player;
     //invoke to check Player dash ability access
     public PlayerMovement Dash; 
     
-    
+ 
     private SpriteRenderer mySR;    //Enemy sprite access
     //player movement script Dash ability call
-    
     public GameObject roof ;
-    
-    //camera objects
-    public CinemachineVirtualCamera MainCam;
 
-    public CinemachineVirtualCamera Cutscene;
     // Start is called before the first frame update
     void Start()
     {
         mySR = GetComponentInChildren<SpriteRenderer>();
         currentPosition = points[pointSelect];
+        
+        //DItems = FindObjectOfType<dropItems>();
     }
 
     // Update is called once per frame
@@ -65,53 +63,25 @@ public class MovingEnemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Player" && Dash.Dashing == true)
+        if (other.gameObject.tag == "Player" && Dash.Dashing || other.gameObject.tag == "Bullet")
         {
             Debug.Log(health);
             health = health - 1;
     
             if (health == 0)
             {
-                playCutScene();//destroy enemy object
+                //playCutScene();//destroy enemy object
                 Destroy(roof);
                 _SJAbility.SetActive(true);
+                items1.SetActive(true);
+                items2.SetActive(true);
+                Destroy(gameObject);
             }
         }
-        else if (other.gameObject.tag == "HeroBullet")
+        if (other.gameObject.tag == "invisHero" || other.gameObject.tag =="Hero_enemy1" ||other.gameObject.tag =="Hero_enemy2")
         {
-            health = health - 1;
-    
-            if (health == 0)
-            {
-                playCutScene();//destroy enemy object
-                Destroy(roof);
-                _SJAbility.SetActive(true);
-            }
+            Physics.IgnoreCollision(player.GetComponent<Collider>(),GetComponent<Collider>());
         }
     }
-    public void playCutScene()
-    {
-        Cutscene.enabled = true;
-        
-        MainCam.enabled = false;
-        /*anim.Play("buff view");*/
-        StartCoroutine(endCutScene());
-    }
-    IEnumerator endCutScene()
-    {
-        yield return new WaitForSeconds(6f);
-        /*Debug.Log("end cut");*/
-        MainCam.enabled = true;
-        Cutscene.enabled = false;
-        Destroy(gameObject); 
-        
-
-    }
-
-   
-
-
-
-
 
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     
-    public GameObject _dashAbility;
+    public GameObject Ability;
     public GameObject _enemy;
     public float moveSpeed;
     public Transform currentPosition;
@@ -18,14 +18,17 @@ public class Enemy : MonoBehaviour
     private SpriteRenderer mySR;
     private GameObject player;
     private Collider2D enemy;
+    public  GameObject item1;
+    //private dropItems DItems;
     
     // Start is called before the first frame update
     void Start()
     {
         mySR = GetComponentInChildren<SpriteRenderer>();
         currentPosition = points[pointSelect];
-        anim = GetComponent<Animator>();
+        anim = GetComponentInChildren<Animator>();
         _healthManager = FindObjectOfType<HealthManager>();
+        //DItems = FindObjectOfType<dropItems>();
     }
 
     // Update is called once per frame
@@ -51,12 +54,14 @@ public class Enemy : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            EnemyHealth();
-            anim.SetBool("canAttack",true);
-            _healthManager.HurtPlayer();
-            anim.SetBool("canAttack",false);
+            anim.SetBool("Player",true);
             /*Debug.Log(("Dash"));*/
         }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        anim.SetBool("Player",false);
     }
 
     public void EnemyHealth()
@@ -64,8 +69,9 @@ public class Enemy : MonoBehaviour
         health = health - 1;
         if (health == 0)
         {
+            item1.SetActive(true);
             Destroy(gameObject);
-            _dashAbility.SetActive(true);
+            Ability.SetActive(true);
         }
     }
 

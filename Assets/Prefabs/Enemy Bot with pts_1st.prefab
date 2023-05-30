@@ -69,8 +69,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 702575095
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -6334208311441612485, guid: 3112fd1b995d4e84b80b4c6c2e0a0eec, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -115,7 +115,6 @@ GameObject:
   - component: {fileID: 3057911920097318775}
   - component: {fileID: 6495930100876389265}
   - component: {fileID: 6495930100876389259}
-  - component: {fileID: 6495930100876389258}
   m_Layer: 0
   m_Name: Enemy bot
   m_TagString: Enemy_Bot
@@ -131,7 +130,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3057911920097318776}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.054, z: 0}
+  m_LocalPosition: {x: 0, y: 0.017, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3057911919728060891}
@@ -203,7 +202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72302ec398d00754490d4f45cdfa5af5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 6312889739516379398, guid: b3f8a40be7416af4ebde12415146a184, type: 3}
   _enemyBot: {fileID: 3057911920097318776}
   moveSpeed: 3
   pointSelect: 0
@@ -211,6 +210,7 @@ MonoBehaviour:
   points:
   - {fileID: 3057911921716931308}
   - {fileID: 3057911920219101034}
+  item1: {fileID: 0}
 --- !u!114 &6495930100876389259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,19 +225,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthManager: {fileID: 0}
   _playerMovement: {fileID: 0}
---- !u!114 &6495930100876389258
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3057911920097318776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cd73dcfcafff354da0be6458821d364, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item1: {fileID: 7546337055866802687, guid: 921715546a851d14887fbd1192473761, type: 3}
+  HurtValue: 2
 --- !u!1 &3057911920219101035
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,7 +279,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3057911921029601755}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -21.2, y: -18.67, z: 47.290512}
   m_LocalScale: {x: 1, y: 3.0129, z: 1}
   m_Children:
@@ -403,3 +391,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthManager: {fileID: 0}
   _playerMovement: {fileID: 0}
+  HurtValue: 0

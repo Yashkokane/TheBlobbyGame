@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class Invisiblity : MonoBehaviour
 {
-    private Invisiblity HeroInvis;
+    public static Invisiblity instance;
     //public bool active;
     //public float startTime;
     private Text theText;
@@ -15,26 +15,27 @@ public class Invisiblity : MonoBehaviour
     
     [SerializeField] float startTime = 10;
     public float timer = 10;
-    
+
+    public GameObject blob;
+    public GameObject player;
+    public GameObject hero;
     //public GameObject Timetext;
     public SpriteRenderer heroS;
+    public SpriteRenderer heroB;
     public bool canInvis;
-    public bool isInvis;
-    private Color colS;
-    //[SerializeField] GameObject text;
-    //[SerializeField] SpriteRenderer[] HeroB;
-    //[SerializeField] Color[] colorB;
+    public static bool isInvis;
+    //private Color colS;
+    //private Color colB;
+    public Animator anim_s;
+    public Animator anim_B;
     
     private potionCollection pC;
     
     private void Start()
     {
-        heroS = GetComponentInChildren<SpriteRenderer>();
-        colS = heroS.color;
-        /*for (int i = 0; i < HeroB.Length; i++)
-        {
-            colorB[i] = HeroB[i].color;
-        }*/
+        //heroS = GetComponentInChildren<SpriteRenderer>();
+        //GetComponent<SpriteRenderer>().material.color = new Color(1f, 1f, 1f, 0.2f);
+        //colS = heroS.color;
         pC = FindObjectOfType<potionCollection>();
         pM = FindObjectOfType<PlayerMovement>();
     }
@@ -42,7 +43,7 @@ public class Invisiblity : MonoBehaviour
     private void Update()
     {
         PotionCheck();
-        if (isInvis == true)
+        if (isInvis)
         {
             startTimer();
         }
@@ -54,25 +55,27 @@ public class Invisiblity : MonoBehaviour
         {
             if (PlayerMovement.p_level1)
             {
-                gameObject.tag = "invisHero";
-                colS.a = 0.5f;
-                heroS.color = colS;
+                //Debug.Log("hit");
+                anim_s.SetTrigger("GoInvis");
+                player.tag = "invisHero";
+                blob.tag = "invisHero";
+                heroS.GetComponent<SpriteRenderer>().material.color = new Color(1f, 1f, 1f, 0.5f);
+                heroS.GetComponent<SpriteRenderer>().sortingOrder = -1;
+                //colS.a = 0.2f;
+                //heroS.color = colS;
+                //Debug.Log(heroS.color);
                 isInvis = true;
                 SetTimer();
                 StartCoroutine(MyMethod());
             }
             else if (PlayerMovement.p_level2)
             {
-                gameObject.tag = "invisHero";
-                /*for (int i = 0; i < HeroB.Length; i++)
-                {
-                    colorB[i].a = 0.5f;
-                    HeroB[i].color = colorB[i];
-                }
-                colorB[1].a = 0.3f;
-                HeroB[1].color = colorB[1];
-                colorB[5].a = 0.3f;
-                HeroB[5].color = colorB[5];*/
+                anim_B.SetTrigger("GoInvis");
+                player.tag = "invisHero";
+                hero.tag = "invisHero";
+                //gameObject.layer = 13;
+                heroB.GetComponent<SpriteRenderer>().material.color = new Color(1f, 1f, 1f, 0.5f);;
+                isInvis = true;
                 SetTimer();
                 StartCoroutine(MyMethod());
             }
@@ -87,28 +90,31 @@ public class Invisiblity : MonoBehaviour
         {
             if (PlayerMovement.p_level1)
             {
-                colS.a = 1f;
-                heroS.color = colS;
+                anim_s.SetTrigger("OverInvis") ;
+                heroS.GetComponent<SpriteRenderer>().material.color = new Color(1f, 1f, 1f, 1f);
+                heroS.GetComponent<SpriteRenderer>().sortingOrder = 0;
                 isInvis = false;
-                gameObject.tag = "Player";
-                //Debug.Log("invis off"); 
+                player.tag = "Player";
+                blob.tag ="Player";
+           
             }
             else if (PlayerMovement.p_level2)
             {
-                /*for (int i = 0; i < HeroB.Length; i++)
-                {
-                    colorB[i].a = 1f;
-                    HeroB[i].color = colorB[i];
-                }*/
+                /*colB.a = 1f;
+                heroB.color = colB;*/
+                anim_B.SetTrigger("OverInvis");
+                heroB.GetComponent<SpriteRenderer>().material.color = new Color(1f, 1f, 1f, 1f);
                 isInvis = false;
-                gameObject.tag = "Player";
+                player.tag = "Player";
+                hero.tag = "Player";
+                //gameObject.layer = 8;
             }
         }
     }
 
     public void PotionCheck()
     {
-        if (potionCollection.potion_B_Count >= 50)
+        if (potionCollection.potion_B_Count >= 30)
         {
             canInvis = true;
         }
@@ -123,23 +129,18 @@ public class Invisiblity : MonoBehaviour
     }
 
     public void startTimer()
+     {
+         if (timer >= 0)
          {
-             
-             if (timer >= 0)
-             {
-                 //text.SetActive(true);
-                 timer -= Time.deltaTime;
-                 //theText.text = "Time: " + timer.ToString("F0");
-             }
-             else if (timer <= 0)
-             {
-                 //text.SetActive(false);
-                 isInvis = false;
-                 canInvis = false;
-                 heroInvis();
-                 //pM.active = false;
-             }
+             timer -= Time.deltaTime;
          }
+         else if (timer <= 0)
+         {
+             isInvis = false;
+             canInvis = false;
+             heroInvis();
+         }
+     }
     
     
     IEnumerator MyMethod() {
@@ -163,5 +164,6 @@ public class Invisiblity : MonoBehaviour
     {
         timer = startTime;
     }
-  
+
+   
 }

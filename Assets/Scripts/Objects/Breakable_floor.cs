@@ -7,19 +7,17 @@ public class Breakable_floor : MonoBehaviour
 {
     public PlayerMovement Dash;
 
-    public ParticleSystem particles;
+    /*public ParticleSystem particles;
+    public ParticleSystem smoke;*/
 
-    public ParticleSystem smoke;
+    public AudioSource BreakWall;
 
-    private SpriteRenderer mySR;
-
-    private BoxCollider2D bc;
     // Start is called before the first frame update
     void Start()
     {
-        particles = GetComponentInChildren<ParticleSystem>();
+        /*particles = GetComponentInChildren<ParticleSystem>();
         mySR = GetComponent<SpriteRenderer>();
-        bc = GetComponent<BoxCollider2D>();
+        bc = GetComponent<BoxCollider2D>();*/
     }
 
     // Update is called once per frame
@@ -32,24 +30,26 @@ public class Breakable_floor : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            if (Dash.Dashing == true)
+            if (Dash.Dashing)
             {
-                smoke.Play();
-                StartCoroutine(Break());
+                BreakWall.Play();
+                Destroy(gameObject);
+                //smoke.Play();
+                //StartCoroutine(Break());
             }
         }
     }
-    IEnumerator Break()
+    /*IEnumerator Break()
     {
         /*yield return new WaitForSeconds(smoke.main.startLifetime.constantMax);
-        particles.Play();*/
+        particles.Play();#1#
         
-        yield return new WaitForSeconds(smoke.main.startLifetime.constantMax);
-        mySR.enabled = false;
-        bc.enabled = false;
+       // yield return new WaitForSeconds(smoke.main.startLifetime.constantMax);
+        //mySR.enabled = false;
+        //bc.enabled = false;
         
-        Destroy(gameObject);
-    }
+        
+    }*/
 }
 
 

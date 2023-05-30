@@ -1,25 +1,25 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DestroyBars : MonoBehaviour
 {
-    public GameObject DestBars;
-    
-    public void destroyPrison()
-   {
-       //Debug.Log("hit");
-       GameObject destructable = (GameObject) Instantiate(DestBars);
-       //destructable.transform.position = Bars.transform.position;
-       Destroy(gameObject);
-       
-       //StartCoroutine(MyMethod()); 
-   }
-    
-    /*
-    IEnumerator MyMethod() 
+    [SerializeField] private GameObject BrokenDoor;
+    [SerializeField] private GameObject Door;
+    public static bool DoorOff;
+    public AudioClip batterySound;
+
+    private void Start()
     {
-        yield return new WaitForSeconds(2);
-        Destroy(DestBars);
-    }*/
+   
+    }
+    public void destroyPrison()
+    {
+        Door.SetActive(false);
+        AudioSource.PlayClipAtPoint(batterySound, transform.position, 1);
+        BrokenDoor.SetActive(true);
+        DoorOff = true;
+
+    }
 }
