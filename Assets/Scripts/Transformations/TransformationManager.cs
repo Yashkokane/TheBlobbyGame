@@ -16,6 +16,14 @@ public class TransformationManager : MonoBehaviour
     public bool canTransform;
     public static int TransformID = 0;
     public bool show;
+    private bool transformed;
+
+    public Animator anim_s;
+    public Animator anim_b;
+
+    public bool HeroBig;
+    [SerializeField] float startTime = 10;
+    public float timer;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,11 +43,16 @@ public class TransformationManager : MonoBehaviour
         {
             canTransform = true;
         }
+
+        if (transformed)
+        {
+            startTimer();
+        }
     }
 
     public void transformCheck()
     {
-        if (!canTransform)
+        if (!canTransform && !transformed)
         {
             HSmall.SetActive(true);
             HBig.SetActive(false);
@@ -53,10 +66,9 @@ public class TransformationManager : MonoBehaviour
         show = !show;
         if (show)
         {
+            //Debug.Log("hit");
             transformWheel.SetActive(true);
-            
             TransformID = 0;
-
         }
         else
         {
@@ -72,45 +84,51 @@ public class TransformationManager : MonoBehaviour
                 break;
             case 1:
                 //Debug.Log("small");
+                anim_s.SetTrigger("Evolve");
                 pM.Jump();
                 HSmall.SetActive(true);
                 HBig.SetActive(false);
                 H_E1.SetActive(false);
                 H_E2.SetActive(false);
-                pM.moveForce = 25;
+                pM.moveForce = 30;
+                gameObject.layer = 8;
                 PlayerMovement.p_level1 = true;
                 PlayerMovement.p_level2 = false;
                 PlayerMovement.p_E1 = false;
                 PlayerMovement.p_E2 = false;
+                HeroBig = false;
                 //pM.sizeupdate();
                 break;
             case 2:
                 if (canTransform)
                 {
+                    anim_b.SetTrigger("Evolution");
+                    pM.Jump();
                     HBig.SetActive(true);
                     HSmall.SetActive(false);
                     H_E1.SetActive(false);
                     H_E2.SetActive(false);
-                    pM.Jump();
+                    gameObject.layer = 8;
                     pM.moveForce = 35;
                     PlayerMovement.p_level1 = false;
                     PlayerMovement.p_level2 = true;
                     PlayerMovement.p_E1 = false;
                     PlayerMovement.p_E2 = false;
+                    HeroBig = true;
                 }
                 //Debug.Log("big");
                 //pM.sizeupdate();
                 
                 break;
             case 3:
-                
+                transformed = true;
                 //PotionUsage(25);
                 HSmall.SetActive(false);
                 HBig.SetActive(false);
                 H_E1.SetActive(true);
                 H_E2.SetActive(false);
                 pM.Jump();
-                pM.moveForce = 30;
+                pM.moveForce = 25;
                 //Debug.Log("E1");
                 gameObject.tag = "Player";
                 PlayerMovement.p_level1 = false;
@@ -118,30 +136,59 @@ public class TransformationManager : MonoBehaviour
                 PlayerMovement.p_E1 = true;
                 PlayerMovement.p_E2 = false;
                 potionCollection.RReduceCount();
-                
-                
-                /*pM.canDash = false;
-                pM.canJump = false;
-                pM._superJump = false;*/
+                gameObject.layer = 11;
+                timer = 25;
+                SetTimer();
                 break;
             case 4:
+                transformed = true;
                 //Debug.Log("E2");
                 //PotionUsage(50);
-                H_E1.SetActive(true);
-                H_E2.SetActive(false);
+                H_E1.SetActive(false);
+                H_E2.SetActive(true);
                 HBig.SetActive(false);
                 HSmall.SetActive(false);
                 pM.Jump();
-                
+                pM.moveForce = 25;
                 gameObject.tag = "Player";
                 PlayerMovement.p_level1 = false;
                 PlayerMovement.p_level2 = false;
                 PlayerMovement.p_E1 = false;
                 PlayerMovement.p_E2 = true;
                 potionCollection.RReduceCount();
+                gameObject.layer = 12;
+                timer = 35;
+                SetTimer();
                 break;
         }
     }
-
+    public void startTimer()
+    {
+        if (timer >= 0)
+        {
+            timer -= Time.deltaTime;
+        }
+        else if (timer <= 0)
+        {
+            if (HealthManager.PlayerHP < 50)
+            {
+                TransformID = 1;
+                TransformationData();
+                transformed = false;
+            }
+            else if (HealthManager.PlayerHP > 50)
+            {
+                TransformID = 2;
+                TransformationData();
+                transformed = false;
+            }
+            
+        }
+    }
+   
+    public void SetTimer()
+    {
+        timer = startTime;
+    }
    
 }

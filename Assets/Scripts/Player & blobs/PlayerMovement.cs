@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -12,12 +11,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Collider2D groundCheck;
     [SerializeField] private Collider2D groundCheck_B;
     [SerializeField] private LayerMask groundLayers;
+    
     [SerializeField] public bool canDash;
-    [SerializeField] public bool Dashing = false;
-    
+    [SerializeField] public bool Dashing;
+    public static PlayerMovement pMovement;
     public GameObject MapToggle;
-    
-    public bool showMap;
+    private bool showMap;
     
     //knockback variables
     public float knockback;
@@ -26,17 +25,20 @@ public class PlayerMovement : MonoBehaviour
     public bool knockbackRight;
 
     [SerializeField] public bool canSJ;
-    public  static float moveDir;
+    public static float moveDir;
     private Rigidbody2D myRB;
     
     private SpriteRenderer mySR;
     [SerializeField]private SpriteRenderer mySRE;
     
     //public float V_speed;
-    private bool canJump;
-    public Animator anim_Small;
+    public bool canJump;
+    
+    //animators for the forms of player
+    [SerializeField] private Animator anim_Small;
     [SerializeField] private Animator anim_big;
     [SerializeField] private Animator anim_enemy1;
+    [SerializeField] private Animator anim_enemy2;
     
     //Transform variables
     //player evolution
@@ -46,20 +48,16 @@ public class PlayerMovement : MonoBehaviour
     public static bool p_E2;
     
     //Dash Controls
-    public float dashSpeed;
-    private float dashTime;
-    public float startDashTime;
+    private float dashSpeed = 25;
+    private float dashTime =0;
+    private float startDashTime =0.6f;
     private float previousDirection = 1;
-    
-    public int p;
-    
+
     //super jump controls
     public bool _superJump;
-    public float chargeUp;
+    private float chargeUp;
 
-    public GameObject lvl2Spawn;
-    public GameObject lvl1Spawn;
-    public bool active = false;
+    public bool active;
     
     private Invisiblity invis;
     private potionCollection pC;
@@ -67,32 +65,33 @@ public class PlayerMovement : MonoBehaviour
     private ShootingBullet sB;
     private gameManager GameManager;
     private HealthManager _hM;
-    //public VectorValues StartPosition;
-    //public VectorValues ReturnPosition;
-    public  BoxCollider2D myBox;
-    //public static BoxCollider2D myBoxB;
-    
-    //[SerializeField] SpriteRenderer[] HeroB;
-
-    //[SerializeField] GameObject player;
-
     public GameObject[] players;
-    // Start is called before the first frame update\
     private string sceneName;
+    [SerializeField] public Transform startpos;
+    
+    public AudioSource walkSound;
+    public AudioSource DashSound;
+    //public AudioSource JumpSound;
+    
+    private void Awake()
+    {
+        /*if (pMovement == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            pMovement = this;
+        }
+        else if (pMovement != this)
+        {
+            Destroy(gameObject);
+        }*/
+        
+    }
     void Start()
     {
         Time.timeScale = 1;
-        /*Scene currentScene = SceneManager.GetActiveScene ();
-        sceneName = currentScene.name;
-        Debug.Log(sceneName);*/
-        myBox = GetComponent<BoxCollider2D>();
         anim_Small = GetComponentInChildren<Animator>();
         anim_enemy1 = GetComponentInChildren<Animator>();
-        /*players = GameObject.FindGameObjectsWithTag("Player");
-        if (players.Length > 1)
-        {
-            Destroy(players[0]);
-        }*/
+        anim_enemy2 = GetComponentInChildren<Animator>();
         myRB = GetComponent<Rigidbody2D>();
         mySR = GetComponentInChildren<SpriteRenderer>();
         dashTime = startDashTime;   //Dash timer
@@ -102,8 +101,24 @@ public class PlayerMovement : MonoBehaviour
         tM = FindObjectOfType<TransformationManager>();
         sB = FindObjectOfType<ShootingBullet>();
         _hM = FindObjectOfType<HealthManager>();
-        DontDestroyOnLoad(gameObject);
+
         mySRE = GetComponentInChildren<SpriteRenderer>();
+  
+        players = GameObject.FindGameObjectsWithTag("PlayerPrefab");
+        if (players.Length > 1)
+        {
+            Destroy(players[1]);
+        }
+        if (SaveManager.instance.hasloaded)
+        {
+            transform.position = SaveManager.instance.activeSave.lastCheckPoint;
+            
+        }
+        else
+        {
+            transform.position = startpos.position;
+        }
+        //transform.position = startpos.position;
     }
     
     private void FixedUpdate()
@@ -115,9 +130,14 @@ public class PlayerMovement : MonoBehaviour
             myRB.AddForce(moveAxis * moveForce, ForceMode2D.Force);
         }
 
+        if (tM.HeroBig)
+        {
+            p_level1 = false;
+            p_level2 = true;
+        }
         if (p_level1)
         {
-            canJump = groundCheck.IsTouchingLayers(groundLayers);
+            canJump = groundCheck.IsTouchingLayers(groundLayers);       //Ground check for small form 
             if (!canJump)
             {
                 //Debug.Log("hit1");
@@ -131,23 +151,24 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (p_level2)
         {
-            canJump = groundCheck_B.IsTouchingLayers(groundLayers);
+            canJump = groundCheck_B.IsTouchingLayers(groundLayers);       //Ground check for final form 
             if (!canJump)
             {
-                //Debug.Log("hit2");
-                anim_big.SetBool("isGrounded",false);
+                //Debug.Log("hit1");
+                anim_big.SetBool("isGrounded", false);
             }
             else
             {
                 anim_big.SetBool("isGrounded", true);
             }
+
         }
         if (myRB.velocity.x != 0)
         {
             previousDirection = myRB.velocity.x;
         }
 
-        if (knockbackCount == knockbackLength)
+        if (knockbackCount == knockbackLength)     
         {
             knockbackPlayer();
         }
@@ -157,6 +178,7 @@ public class PlayerMovement : MonoBehaviour
         }
         
     }
+    
     public void sizeupdate()
     {
         if (p_level1)
@@ -174,7 +196,7 @@ public class PlayerMovement : MonoBehaviour
     
     public void Move(InputAction.CallbackContext context)
     {
-        if (!_hM.isDead)
+        if (!_hM.isDead)        //movement stopped if player is dead
         {
             if (knockbackCount <= 0)
             {
@@ -185,64 +207,89 @@ public class PlayerMovement : MonoBehaviour
                     {
                         transform.localRotation = Quaternion.Euler(0, 0, 0);
                         anim_Small.SetBool("IsMoving",true);
+                        if (!walkSound.isPlaying)
+                        {
+                            walkSound.Play();
+                        }
+                        
                     }
                     else if (moveDir < 0)
                     { 
                         transform.localRotation = Quaternion.Euler(0, 180, 0);
                         anim_Small.SetBool("IsMoving",true);
+                        //walkSound.Play();
+                        if (!walkSound.isPlaying)
+                        {
+                            walkSound.Play();
+                        }
                     }
                     else
                     {
                         anim_Small.SetBool("IsMoving",false);
+                        walkSound.Stop();
                     }
-                }
+                }       
                 else if(p_level2)
                 {
                     if (moveDir >0)
                     {
                         transform.localRotation = Quaternion.Euler(0, 0, 0);
                         anim_big.SetBool("IsMoving",true);
+                        if (!walkSound.isPlaying)
+                        {
+                            walkSound.Play();
+                        }
                     }
                     else if (moveDir < 0)
                     {
                         transform.localRotation = Quaternion.Euler(0, 180, 0);
                         anim_big.SetBool("IsMoving",true);
+                        if (!walkSound.isPlaying)
+                        {
+                            walkSound.Play();
+                        }
                     }
                     else
                     {
                         anim_big.SetBool("IsMoving",false);
+                        walkSound.Stop();
                     }
                 }
                 else if (p_E1)
                 {
                     if (moveDir >0)
                     {
-                        mySRE.flipX = false;
-                        anim_enemy1.SetBool("IsMoving",true);
+                        transform.localRotation = Quaternion.Euler(0, 0, 0);
+                        anim_enemy1.SetBool("E1_move",true);
+                        Debug.Log("hit");
                     }
                     else if (moveDir < 0)
                     {
-                        mySRE.flipX = true;
-                        anim_enemy1.SetBool("IsMoving",true);
+                        transform.localRotation = Quaternion.Euler(0, 180, 0);
+                        anim_enemy1.SetBool("E1_move",true);
+                        Debug.Log("hit1");
                     }
-                    else
+                    /*else
                     {
                         anim_enemy1.SetBool("IsMoving",false);
-                    }
+                    }*/
                 }
                 else if (p_E2)
                 {
                     if (moveDir >0)
                     {
-                        mySR.flipX = false;
+                        transform.localRotation = Quaternion.Euler(0, 0, 0);
+                        anim_enemy2.SetBool("E2_move",true);
                     }
                     else if (moveDir < 0)
                     {
-                        mySR.flipX = true;
+                        transform.localRotation = Quaternion.Euler(0, 180, 0);
+                        anim_enemy2.SetBool("E2_move",true);
+                        
                     }
                     else
                     {
-                        
+                        //anim_enemy2.SetBool("IsMoving",false);
                     }
                 }  
             }
@@ -250,7 +297,21 @@ public class PlayerMovement : MonoBehaviour
        
     }
 
-    public void knockbackPlayer()
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (Invisiblity.isInvis && other.gameObject.tag == "Enemy_Bot")
+        {
+            Physics.IgnoreLayerCollision(13,9,true);
+            Physics.IgnoreLayerCollision(8,9,true);
+        }
+
+        if (other.gameObject.tag == "FireBall")
+        {
+            _hM.HurtPlayer(5);
+        }
+    }
+
+    public void knockbackPlayer()        //knockback handler
     {
         if (knockbackRight)
         {
@@ -283,7 +344,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (context.started)
         {
-            if (p_level1 || p_level2)
+            if (p_level1)
             {
                if (canDash && !Dashing && moveDir!= 0)
                {
@@ -302,6 +363,7 @@ public class PlayerMovement : MonoBehaviour
                             if (p_level1)
                             {
                                 anim_Small.SetBool("isDashing", true);
+                                DashSound.Play();
                                 Invoke("Dashtimer", 1.0f); 
                                 myRB.velocity = Vector2.left * dashSpeed;
                                 Dashing = true;
@@ -309,6 +371,7 @@ public class PlayerMovement : MonoBehaviour
                             else if (p_level2)
                             {
                                 anim_big.SetBool("isDashing",true);
+                                DashSound.Play();
                                 Invoke("Dashtimer", 1.0f); 
                             }
                             
@@ -320,12 +383,14 @@ public class PlayerMovement : MonoBehaviour
                             if (p_level1)
                             {
                                 anim_Small.SetBool("isDashing",true);
+                                DashSound.Play();
                                 //anim_Small.Play("Hero1_Dash");
                                 Invoke("Dashtimer", 1.0f); 
                             }
                             else if (p_level2)
                             {
                                 anim_big.SetBool("isDashing",true);
+                                DashSound.Play();
                                 Invoke("Dashtimer", 1.0f); 
                             }
                         }
@@ -344,12 +409,12 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            if (p_level1 == true)
+            if (p_level1)
             {
                 anim_Small.SetBool("isDashing",false);
                 anim_Small.SetBool("IsIdle",true);
             }
-            else if (p_level2 == true)
+            else if (p_level2)
             {
                 anim_big.SetBool("isDashing",false);
                 anim_big.SetBool("IsIdle",true);
@@ -369,43 +434,33 @@ public class PlayerMovement : MonoBehaviour
            chargeUp = jumpForce * 0.08f;
            if (p_level1)
            {
-               p = 1;
+               if (canJump)
+               {
+                   myRB.AddForce(transform.up * jumpForce * chargeUp , ForceMode2D.Impulse );
+                   canJump = false;
+                   //JumpSound.Play();
+                   anim_Small.SetTrigger("Takeoff");
+                   anim_Small.SetBool("isJumping", true);
+                   chargeUp = 0f;
+               }
+               else
+               {
+                   anim_Small.Play("Hero1_idle");
+               }
            }
            else if (p_level2)
            {
-               p = 2;
-           }
-           switch (p)
-           {
-               case 1:
+               if (canJump)
                {
-                   if (canJump)
-                   {
-                       myRB.AddForce(transform.up * jumpForce * chargeUp , ForceMode2D.Impulse );
-                       canJump = false;
-                       anim_Small.Play("Hero1_jump");
-                       chargeUp = 0f;
-                   }
-                   else
-                   {
-                       anim_Small.Play("Hero1_idle");
-                   }
-                   break;
+                   myRB.AddForce(transform.up * jumpForce * chargeUp*2f, ForceMode2D.Impulse);
+                   canJump = false;
+                   //JumpSound.Play();
+                   anim_big.SetTrigger("Takeoff");
+                   anim_big.SetBool("isJumping", true);  
                }
-               case 2:
+               else
                {
-                   if (canJump)
-                   {
-                       myRB.AddForce(transform.up * jumpForce * chargeUp, ForceMode2D.Impulse);
-                       canJump = false;
-                       //anim_Small.Play("Hero2_jump");   
-                   }
-                   else
-                   {
-                       anim_Small.Play("Hero2_Idle");
-                   }
-                   break;
-                    
+                   anim_Small.Play("Hero2_Idle");
                }
            }
            Debug.Log(chargeUp);
@@ -414,22 +469,22 @@ public class PlayerMovement : MonoBehaviour
        
    }
    
-   public void heroInvis(InputAction.CallbackContext context)
+   public void heroInvis(InputAction.CallbackContext context) //invisibility trigger function
    {
        if (context.started)
        {
-           //Debug.Log("fn hit");
-           if (potionCollection.potion_B_Count >= 50)
+           if (potionCollection.potion_B_Count >= 30)
            {
                active = !active;
                invis.heroInvis();
            }
        }
    }
-   public void transform_hero(InputAction.CallbackContext context)
+   public void transform_hero(InputAction.CallbackContext context) //transformation trigger function
    {
        if (context.started)
        {
+           
            tM.TranformWheel();
        }
    }
@@ -441,6 +496,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 anim_Small.SetTrigger("Takeoff");
                 anim_Small.SetBool("isJumping", true);
+                //JumpSound.Play();
                 myRB.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
                 canJump = false;
             } 
@@ -455,6 +511,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 anim_big.SetTrigger("Takeoff");
                 anim_big.SetBool("isJumping", true);
+                //JumpSound.Play();
                 myRB.AddForce(transform.up * jumpForce * 1.2f, ForceMode2D.Impulse);
                 canJump = false;  
             }
@@ -466,7 +523,7 @@ public class PlayerMovement : MonoBehaviour
     }
     
    
-    public void Map(InputAction.CallbackContext context)
+    public void Map(InputAction.CallbackContext context) //map trigger
     {
         if (context.started)
         {
@@ -493,7 +550,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void Shoot(InputAction.CallbackContext context)
+    public void Shoot(InputAction.CallbackContext context)      //Shoot trigger
     {
         if (context.started)
         {

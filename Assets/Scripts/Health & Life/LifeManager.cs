@@ -9,7 +9,7 @@ public class LifeManager : MonoBehaviour
 {
     public int StartLives;
 
-    private int LifeCounter;
+    public static int LifeCounter;
 
     private TMP_Text theText;
     
@@ -21,7 +21,18 @@ public class LifeManager : MonoBehaviour
     void Start()
     {
         theText = GetComponent<TMP_Text>();
-        LifeCounter = StartLives;
+        if (SaveManager.instance.hasloaded)
+        {
+            LifeCounter = SaveManager.instance.activeSave.lives;
+            
+        }
+        else
+        {
+            LifeCounter = StartLives;
+        }
+        //LifeCounter = StartLives;
+      
+        
     }
 
     // Update is called once per frame
@@ -34,14 +45,16 @@ public class LifeManager : MonoBehaviour
         theText.text = LifeCounter.ToString();;
     }
 
-    public void GiveLife()
+    /*public void GiveLife()
     {
 
         LifeCounter++;
-    }
+        SaveManager.instance.activeSave.lives = LifeCounter;
+    }*/
 
     public void TakeLife()
     {
         LifeCounter--;
+       // SaveManager.instance.activeSave.lives = LifeCounter;
     }
 }

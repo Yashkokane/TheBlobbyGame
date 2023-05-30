@@ -7,9 +7,6 @@ public class Enemy_Bot : MonoBehaviour
 {
     public GameObject player;
     public GameObject _enemyBot;
-
-    private dropItems DItems;
-
     public float moveSpeed;
     public int pointSelect;
     
@@ -18,6 +15,7 @@ public class Enemy_Bot : MonoBehaviour
     
     private SpriteRenderer mySR;
     private PlayerMovement pM;
+    public  GameObject item1;
     
     // Start is called before the first frame update
     void Start()
@@ -25,7 +23,6 @@ public class Enemy_Bot : MonoBehaviour
         pM = GetComponent<PlayerMovement>();
         mySR = GetComponentInChildren<SpriteRenderer>();
         currentPosition = points[pointSelect];
-        DItems = FindObjectOfType<dropItems>();
     }
 
     // Update is called once per frame
@@ -63,16 +60,19 @@ public class Enemy_Bot : MonoBehaviour
     {
         if (collision.gameObject.tag == "Bullet")
         {
-            DItems.dropItemOnDeath();
+            //DItems.dropItemOnDeath();
+            item1.SetActive(true);
             Destroy(gameObject);
         }
         /*if (collision.gameObject.tag == "Player" &&  pM.Dashing == true);
         {
             Destroy(gameObject);
         }*/
-        if (collision.gameObject.tag == "invisHero")
+        if (collision.gameObject.tag == "invisHero" || collision.gameObject.tag =="Hero_enemy1" ||collision.gameObject.tag =="Hero_enemy2")
         {
-            Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+            //Physics.IgnoreCollision(player.GetComponent<Collider>(),GetComponent<Collider>());
+       
+            Physics.IgnoreLayerCollision(8,9,true);
         }
     }
     

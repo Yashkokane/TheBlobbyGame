@@ -10,17 +10,29 @@ public class gameManager : MonoBehaviour
     //public static int score;
     
     private bool gamePaused = false;
-    
-    public GameObject menu;
-    
     private gameManager Gm;
     private HealthManager _healthManager;
     private static gameManager Instance;
+    public GameObject menu;
+    
+    //public Vector3 resPt;
+    private PlayerMovement pM;
+   // public GameObject[] BlobArray;
+    public GameObject CurrentCheckpoint;
+    
+    
+    /*private LifeManager _lifeManager;
     public GameObject introDialogue;
-
+    private blobs _blobs;
+    private SaveManager _saveManager;
+    public GameObject player;
+    public int lives;
+    public closeDialogue cD;
+    private checkpoint _checkpoint;
+    public GameObject[] GameManagers;*/
     void Awake ()   
     {
-        if (Instance == null)
+        /*if (Instance == null)
         {
             DontDestroyOnLoad(gameObject);
             Instance = this;
@@ -28,23 +40,40 @@ public class gameManager : MonoBehaviour
         else if (Instance != this)
         {
             Destroy (gameObject);
-        }
+        }*/
     }
+    
     
     private void Start()
     {
-        if (!closeDialogue.instance.close)
-        {
-            introDialogue.SetActive(true);
-        }
-        
+        SaveManager.instance.Save();
+        //BlobArray = GameObject.FindGameObjectsWithTag("Blobs");
+        pM = FindObjectOfType<PlayerMovement>();
         _healthManager = FindObjectOfType<HealthManager>();
-        //Gm = FindObjectOfType<gameManager>();
-        DontDestroyOnLoad(gameObject);
+        //SaveManager.instance.Save();
+        /*_lifeManager = FindObjectOfType<LifeManager>();
+        cD = FindObjectOfType<closeDialogue>();
+        _saveManager = FindObjectOfType<SaveManager>();
+        _blobs = FindObjectOfType<blobs>();
+        _checkpoint = FindObjectOfType<checkpoint>();*/
+        /*GameManagers = GameObject.FindGameObjectsWithTag("GameManager");
+        if (GameManagers.Length > 1)
+        {
+            Destroy(GameManagers[1]);
+        }*/
     }
-
+    public void RespawnPlayer()
+    {
+        pM.transform.position = CurrentCheckpoint.transform.position;
+        _healthManager.ResetHealth();
+        /*for (int i = 0; i < BlobArray.Length; i++)
+        {
+            BlobArray[i].SetActive(true);
+        }*/
+    }
     public void TogglePauseState()
     {
+        gamePaused = !gamePaused;
         if (gamePaused)
         {
             UnPauseGame();
@@ -57,7 +86,7 @@ public class gameManager : MonoBehaviour
      public void PauseGame()
      {
          Time.timeScale = 0;
-         
+         menu.SetActive(true);
      }
 
      public void UnPauseGame()

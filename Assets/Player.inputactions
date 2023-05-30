@@ -23,11 +23,11 @@
                 },
                 {
                     "name": "Super Jump",
-                    "type": "PassThrough",
+                    "type": "Button",
                     "id": "5c0084d7-3fe1-4ac8-b703-005134df1472",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Hold(duration=2.1,pressPoint=7)"
+                    "interactions": ""
                 },
                 {
                     "name": "Pause1",
@@ -190,7 +190,7 @@
                     "name": "",
                     "id": "5c996e43-31f0-4a5a-ae9c-7a8fe90f2da3",
                     "path": "<Keyboard>/x",
-                    "interactions": "Hold(duration=2.2,pressPoint=0.7)",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Super Jump",
@@ -211,7 +211,7 @@
                 {
                     "name": "",
                     "id": "be5965b8-5bfd-4a5a-b72a-aa2823070d7b",
-                    "path": "<Keyboard>/y",
+                    "path": "<Keyboard>/tab",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

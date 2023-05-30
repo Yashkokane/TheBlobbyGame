@@ -5,14 +5,15 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour
 {
-    public static int PlayerHP = 49;
+    //public static HealthManager Hmanager;
+    public static int PlayerHP;
     public int healthMax = 100;
     public HealthBar healthbar;
     public bool isDead = false;
-
+    public static HealthManager instance;
     public GameObject HealthBar;
  
-    private levelManager LevelManager;
+   // private gameManager LevelManager;
     private LifeManager lifeSystem;
     private potionCollection pC;
     private gameManager gM;
@@ -20,7 +21,18 @@ public class HealthManager : MonoBehaviour
     public Animator anim;
     void Awake()    
     {
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
+        /*
+        if (instance == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+    */
     }
    
     // Start is called before the first frame update
@@ -29,33 +41,40 @@ public class HealthManager : MonoBehaviour
         healthbar = FindObjectOfType<HealthBar>();
         healthbar.SetMaxHealth(); //sets the max possible health in the HUD
         lifeSystem = FindObjectOfType<LifeManager>();
-        LevelManager = FindObjectOfType<levelManager>();
+        //LevelManager = FindObjectOfType<levelManager>();
         gM = FindObjectOfType<gameManager>();
         pC = FindObjectOfType<potionCollection>();
         Cp = FindObjectOfType<checkpoint>();
+        //PlayerHP = 12;
+        if (SaveManager.instance.hasloaded)
+        {
+            PlayerHP = SaveManager.instance.activeSave.HP;
+            Debug.Log(PlayerHP);
+        }
+        else
+        {
+            PlayerHP = 12;
+        }
+        
         healthbar.SetHealth(PlayerHP);
+
+        
     }
     
-    /*public void SavePlayer()
-    {
-     //[...]
-    //public PlayerStats localPlayerData = new PlayerStats();
-    //[...]
-        //gameManager.Instance.savedPlayerData = localPlayerData;        
-    }*/
     // Update is called once per frame
     void Update()
     {
         if (PlayerHP <= 0 && !isDead)
         {
             PlayerHP = 0;
-            gM.PauseGame();
-            anim.SetBool("Dying", true);
-            anim.SetBool("Dying", false);
-            LevelManager.RespawnPlayer();
+            gM.RespawnPlayer();
             lifeSystem.TakeLife();
             isDead = true;
             
+        }
+        else
+        {
+            isDead = false;
         }
         //StatsStorage.HP = PlayerHP;
     }
@@ -71,6 +90,7 @@ public class HealthManager : MonoBehaviour
             PlayerHP = PlayerHP + 3;
            
         }
+        
         healthbar.SetHealth(PlayerHP);
     }
     
@@ -85,14 +105,15 @@ public class HealthManager : MonoBehaviour
     public void ResetHealth()
     {
         PlayerHP = Cp.playerHPatCheck;
-        PlayerHP = PlayerHP + 10;
+        PlayerHP = PlayerHP + 5;
         healthbar.SetHealth(PlayerHP);
+        isDead = false;
         //PlayerPrefs.SetInt("PlayerHP", PlayerHP + 20);
     }
 
-    public void HurtPlayer()
+    public void HurtPlayer(int Damage)
     {
-        PlayerHP -= 10;
+        PlayerHP -= Damage;
         healthbar.SetHealth(PlayerHP);
     }
 

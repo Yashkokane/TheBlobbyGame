@@ -24,6 +24,14 @@ public class PotionBManager : MonoBehaviour
         
         theTextB = GetComponent<TMP_Text>();
         SetMaxPotionsB();
+        
+            /*if (SaveManager.instance.saveExists)
+            {
+                //if (SaveManager.instance.hasloaded)
+                    SetPotionB(SaveManager.instance.activeSave.potionsB);
+            }*/
+       
+        
     }
 
    
@@ -39,6 +47,7 @@ public class PotionBManager : MonoBehaviour
             potion = potionMaxValue;
         }
         //slider.value = potion;
-        theTextB.text = potion.ToString();
+        //Debug.Log(potion);
+       theTextB.text = potion.ToString();
     }
 }
